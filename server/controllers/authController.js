@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const passport = require('passport');
 
 exports.validateSignup = (req, res, next) => {
     req.sanitizeBody('name');
@@ -46,11 +47,42 @@ exports.signup = async (req, res) => {
                 }
             });
         }
-         res.json(user);
+        res.json(user);
     })
 };
 
-exports.signin = () => {
+exports.signin = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return res.status(500).json({
+                'errors': {
+                    'status_code': 500,
+                    'message': err.message
+                }
+            })
+        }
+
+        if (!user) {
+            return res.status(400).json({
+                'errors': {
+                    'status_code': 400,
+                    'message': info.message
+                }
+            })
+        }
+
+        req.logIn(user, err => {
+            if (err) {
+                return res.status(500).json({
+                    'errors': {
+                        'status_code': 500,
+                        'message': err.message
+                    }
+                })
+            }
+        });
+        res.json(user)
+    })(req,res,next)
 };
 
 exports.signout = () => {
