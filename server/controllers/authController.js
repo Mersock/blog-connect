@@ -85,8 +85,15 @@ exports.signin = (req, res, next) => {
     })(req,res,next)
 };
 
-exports.signout = () => {
+exports.signout = (req,res) => {
+    res.clearCookie('next-cookie.sid');
+    req.logout();
+    res.json({ 'message' : 'You are now sing out'});
 };
 
-exports.checkAuth = () => {
+exports.checkAuth = (req,res,next) => {
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect('/signin');
 };
