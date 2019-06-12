@@ -15,7 +15,6 @@ exports.getUserById = async (req, res, next, id) => {
     req.profile = user;
 
     const profileId = mongoose.Types.ObjectId(req.profile._id);
-
     if (profileId.equals(req.user._id)) {
         req.isAuthUser = true;
         return next();
@@ -40,8 +39,6 @@ exports.updateUser = () => {
 
 exports.deleteUser = async (req, res) => {
     const {userId} = await req.params;
-    const deletedUser = await  User.findOneAndDelete({_id:userId});
-
     if (!req.isAuthUser) {
         return res.status(400).json({
             'errors': {
@@ -50,7 +47,7 @@ exports.deleteUser = async (req, res) => {
             }
         })
     }
-
+    const deletedUser = await  User.findOneAndDelete({_id:userId});
     res.json(deletedUser);
 
 };
