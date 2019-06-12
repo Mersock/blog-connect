@@ -6,7 +6,17 @@ exports.getUsers = async (req, res) => {
     res.json(user);
 };
 
-exports.getAuthUser = () => {
+exports.getAuthUser = (req,res) => {
+    if(!req.isAuthUser){
+         res.status(403).json({
+            'errors':{
+                'status_code': 403,
+                'message': 'unauthenticated'
+            }
+        });
+        return res.redirect('/signin');
+    }
+    res.json(req.user);
 };
 
 exports.getUserById = async (req, res, next, id) => {
@@ -15,6 +25,7 @@ exports.getUserById = async (req, res, next, id) => {
     req.profile = user;
 
     const profileId = mongoose.Types.ObjectId(req.profile._id);
+    //check user sign in
     if (profileId.equals(req.user._id)) {
         req.isAuthUser = true;
         return next();
