@@ -42,7 +42,7 @@ router
 router.get("/api/users", userController.getUsers);
 router.get(
   "/api/users/profile/:userId",
-  catchErrors(userController.getUserProfile)
+  userController.getUserProfile
 );
 router.get(
   "/api/users/feed/:userId",
