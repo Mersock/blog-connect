@@ -1,31 +1,68 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-exports.getUsers = async (req,res) => {
+exports.getUsers = async (req, res) => {
     const user = await User.find().select('_id name email createdAt updatedAt')
     res.json(user);
 };
 
-exports.getAuthUser = () => {};
+exports.getAuthUser = () => {
+};
 
-exports.getUserById = () => {};
+exports.getUserById = async (req, res, next, id) => {
+    const user = await User.findOne({_id: id});
 
-exports.getUserProfile = () => {};
+    req.profile = user;
 
-exports.getUserFeed = () => {};
+    const profileId = mongoose.Types.ObjectId(req.profile._id);
 
-exports.uploadAvatar = () => {};
+    if (profileId.equals(req.user._id)) {
+        req.isAuthUser = true;
+        return next();
+    }
+    next();
+};
 
-exports.resizeAvatar = () => {};
+exports.getUserProfile = () => {
+};
 
-exports.updateUser = () => {};
+exports.getUserFeed = () => {
+};
 
-exports.deleteUser = () => {};
+exports.uploadAvatar = () => {
+};
 
-exports.addFollowing = () => {};
+exports.resizeAvatar = () => {
+};
 
-exports.addFollower = () => {};
+exports.updateUser = () => {
+};
 
-exports.deleteFollowing = () => {};
+exports.deleteUser = async (req, res) => {
+    const {userId} = await req.params;
+    const deletedUser = await  User.findOneAndDelete({_id:userId});
 
-exports.deleteFollower = () => {};
+    if (!req.isAuthUser) {
+        return res.status(400).json({
+            'errors': {
+                'status_code': 400,
+                'message': 'unauthorized'
+            }
+        })
+    }
+
+    res.json(deletedUser);
+
+};
+
+exports.addFollowing = () => {
+};
+
+exports.addFollower = () => {
+};
+
+exports.deleteFollowing = () => {
+};
+
+exports.deleteFollower = () => {
+};

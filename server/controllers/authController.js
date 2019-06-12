@@ -47,7 +47,10 @@ exports.signup = async (req, res) => {
                 }
             });
         }
-        res.json(user.name);
+        res.json({
+            'name': user.name,
+            'email': user.email
+        });
     })
 };
 
@@ -82,17 +85,17 @@ exports.signin = (req, res, next) => {
             }
         });
         res.json(user)
-    })(req,res,next)
+    })(req, res, next)
 };
 
-exports.signout = (req,res) => {
+exports.signout = (req, res) => {
     res.clearCookie('next-cookie.sid');
     req.logout();
-    res.json({ 'message' : 'You are now sing out'});
+    res.json({'message': 'You are now sing out'});
 };
 
-exports.checkAuth = (req,res,next) => {
-    if(req.isAuthenticated()){
+exports.checkAuth = (req, res, next) => {
+    if (req.isAuthenticated()) {
         return next();
     }
     res.redirect('/signin');
