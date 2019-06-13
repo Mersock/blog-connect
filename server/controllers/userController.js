@@ -45,7 +45,13 @@ exports.getUserProfile = (req, res) => {
     res.json(req.profile);
 };
 
-exports.getUserFeed = () => {
+exports.getUserFeed = async (req, res) => {
+    const {following, _id} = req.profile;
+
+    following.push(_id);
+    const users = await User.find({_id: {$nin: following}})
+                            .select('_id name avatar');
+    res.json(users);
 };
 
 exports.uploadAvatar = () => {
@@ -93,7 +99,7 @@ exports.addFollower = async (req, res) => {
     res.json(user);
 };
 
-exports.deleteFollowing = async (req,res,next) => {
+exports.deleteFollowing = async (req, res, next) => {
     const {followId} = req.body;
 
     await User.findOneAndUpdate(
@@ -103,7 +109,7 @@ exports.deleteFollowing = async (req,res,next) => {
     next();
 };
 
-exports.deleteFollower = async (req,res) => {
+exports.deleteFollower = async (req, res) => {
     const {followId} = req.body;
 
     const user = await User.findOneAndUpdate(
