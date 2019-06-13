@@ -6,10 +6,10 @@ exports.getUsers = async (req, res) => {
     res.json(user);
 };
 
-exports.getAuthUser = (req,res) => {
-    if(!req.isAuthUser){
-         res.status(403).json({
-            'errors':{
+exports.getAuthUser = (req, res) => {
+    if (!req.isAuthUser) {
+        res.status(403).json({
+            'errors': {
                 'status_code': 403,
                 'message': 'unauthenticated'
             }
@@ -33,8 +33,8 @@ exports.getUserById = async (req, res, next, id) => {
     next();
 };
 
-exports.getUserProfile = (req,res) => {
-    if(!req.profile){
+exports.getUserProfile = (req, res) => {
+    if (!req.profile) {
         return res.status(404).json({
             'errors': {
                 'status_code': 404,
@@ -67,19 +67,49 @@ exports.deleteUser = async (req, res) => {
             }
         })
     }
-    const deletedUser = await  User.findOneAndDelete({_id:userId});
+    const deletedUser = await User.findOneAndDelete({_id: userId});
     res.json(deletedUser);
 
 };
 
-exports.addFollowing = () => {
+exports.addFollowing = async (req, res, next) => {
+    const {followId} = req.body;
+
+    await User.findOneAndUpdate(
+        {_id: req.user._id},
+        {$push: {following: followId}}
+    );
+    next();
 };
 
-exports.addFollower = () => {
+exports.addFollower = async (req, res) => {
+    const {followId} = req.body;
+
+    const user = await User.findOneAndUpdate(
+        {_id: followId},
+        {$push: {followers: req.user._id}},
+        {new: true}
+    );
+    res.json(user);
 };
 
-exports.deleteFollowing = () => {
+exports.deleteFollowing = async (req,res,next) => {
+    const {followId} = req.body;
+
+    await User.findOneAndUpdate(
+        {_id: req.user._id},
+        {$pull: {following: followId}}
+    );
+    next();
 };
 
-exports.deleteFollower = () => {
+exports.deleteFollower = async (req,res) => {
+    const {followId} = req.body;
+
+    const user = await User.findOneAndUpdate(
+        {_id: followId},
+        {$pull: {followers: req.user._id}},
+        {new: true}
+    );
+    res.json(user);
 };
