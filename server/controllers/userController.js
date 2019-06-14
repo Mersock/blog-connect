@@ -4,7 +4,7 @@ const multer = require('multer');
 const jimp = require('jimp');
 
 exports.getUsers = async (req, res) => {
-    const user = await User.find().select('_id name email createdAt updatedAt')
+    const user = await User.find().select('_id name email createdAt updatedAt');
     res.json(user);
 };
 
@@ -28,7 +28,7 @@ exports.getUserById = async (req, res, next, id) => {
 
     const profileId = mongoose.Types.ObjectId(req.profile._id);
     //check user sign in
-    if (profileId.equals(req.user._id)) {
+    if (req.user && profileId.equals(req.user._id)) {
         req.isAuthUser = true;
         return next();
     }
@@ -82,7 +82,7 @@ exports.resizeAvatar = async (req, res, next) => {
     req.body.avatar = `/static/uploads/avatars/${req.user.name}-${Date.now()}.${extension}`;
     const image = await jimp.read(req.file.buffer);
     await image.resize(250, jimp.AUTO);
-    await image.write(`./${req.body.avartar}`);
+    await image.write(`./${req.body.avatar}`);
     next();
 };
 
