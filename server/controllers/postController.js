@@ -32,24 +32,41 @@ exports.resizeImage = async (req, res, next) => {
     next();
 };
 
-exports.addPost = async (req,res) => {
+exports.addPost = async (req, res) => {
     req.body.postedBy = req.user._id;
     const post = await new Post(req.body).save();
-    await Post.populate(post,{
-        path:'postedBy',
-        select:'_id name avatar'
-    })
+    await Post.populate(post, {
+        path: 'postedBy',
+        select: '_id name avatar'
+    });
     res.json(post);
 };
 
-exports.deletePost = () => {};
+exports.deletePost = () => {
+};
 
-exports.getPostById = () => {};
+exports.getPostById = () => {
+};
 
-exports.getPostsByUser = () => {};
+exports.getPostsByUser = async (req, res) => {
+    const posts = await Post.find({postedBy: req.profile._id}).sort({
+        createdAt: "desc"
+    });
+    res.json(posts);
+};
 
-exports.getPostFeed = () => {};
+exports.getPostFeed = async (req, res) => {
+    const {following, _id} = req.profile;
 
-exports.toggleLike = () => {};
+    following.push(_id);
+    const posts = await Post.find({postedBy: {$in: following}}).sort({
+            createdAt:"desc"
+    });
+    res.json(posts);
+};
 
-exports.toggleComment = () => {};
+exports.toggleLike = () => {
+};
+
+exports.toggleComment = () => {
+};
