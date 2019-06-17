@@ -42,10 +42,32 @@ exports.addPost = async (req, res) => {
     res.json(post);
 };
 
-exports.deletePost = () => {
+exports.deletePost = async (req, res) => {
+
+    const {_id} = req.post;
+
+    if (!req.isPoster) {
+        return res.status(400).json({
+            'errors': {
+                'status_code': 400,
+                'message': 'unauthorized'
+            }
+        });
+    }
+    const deletedPost = await Post.findOneAndDelete({_id});
+    res.json(deletedPost);
 };
 
-exports.getPostById = () => {
+exports.getPostById = async (req, res, next, id) => {
+    const post = await Post.findOne({_id: id});
+    req.post = post;
+
+    const postedId = mongoose.Types.ObjectId(req.post.postedBy._id);
+    if (req.user && postedId.equals(req.user._id)) {
+        req.isPoster = true;
+        return next();
+    }
+    next();
 };
 
 exports.getPostsByUser = async (req, res) => {
@@ -94,8 +116,8 @@ exports.toggleComment = async (req, res) => {
     const updatedPost = await Post.findOneAndUpdate(
         {_id: postId},
         {[operator]: {comments: data}},
-        {new:true}
-    ).populate('postedBy',"_id name avatar").populate('comments.postedBy','_id name avatar');
+        {new: true}
+    ).populate('postedBy', "_id name avatar").populate('comments.postedBy', '_id name avatar');
 
     res.json(updatedPost);
 };
