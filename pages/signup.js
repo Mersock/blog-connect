@@ -15,13 +15,25 @@ import Slide from "@material-ui/core/Slide";
 import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import withStyles from "@material-ui/core/styles/withStyles";
+import {signupuser} from "../lib/auth";
 
 class Signup extends React.Component {
-    state = {};
+    state = {
+        name: '',
+        email: '',
+        password: ''
+    };
 
-    handleChange = () => {
+    handleChange = e => {
+        this.setState({[e.target.name]: e.target.value})
+    };
 
-    }
+    handleSubmit = e => {
+        const {name, email, password} = this.state;
+        const user = {name, email, password};
+        signupuser(user);
+        e.preventDefault();
+    };
 
     render() {
         const {classes} = this.props;
@@ -35,7 +47,7 @@ class Signup extends React.Component {
                     <Typography variant="h5" component="h1">
                         Sign Up
                     </Typography>
-                    <form className={classes.form}>
+                    <form onSubmit={this.handleSubmit} className={classes.form}>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="name">Name</InputLabel>
                             <Input
