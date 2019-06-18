@@ -5,15 +5,21 @@ import Button from "@material-ui/core/Button";
 import ShareOutlined from "@material-ui/icons/ShareOutlined";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-const Navbar = ({classes,router}) => {
+const Navbar = ({classes, router, pageProps: {auth}}) => {
+    const {user = {}} = auth || {};
     return (
         <AppBar className={classes.appBar} position={router.pathname === "/" ? "fixed" : "static"}>
             <Toolbar>
                 {/*Main title / Home Button*/}
                 <ShareOutlined className={classes.icon}/>
-                <Typography variant="h3" component="h1" className={classes.toolbarTitle}>
-                    Nextconnect
+                <Typography variant="h5" component="h1" className={classes.toolbarTitle}>
+                    BlogConnect
                 </Typography>
+                {user._id ? (
+                    <div><Button>Profile</Button><Button variant="outlined">Sign out</Button></div>
+                ) : (
+                    <div><Button>Sign In<Button></Button>Sign Up</Button></div>
+                )}
             </Toolbar>
         </AppBar>
     );
