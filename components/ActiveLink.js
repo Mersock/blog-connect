@@ -14,7 +14,7 @@ const ActiveLink = ({router, href, children}) => {
 
     const isCurrentPath = router.pathname === href || router.asPath === href;
 
-    console.log('aspath=' + router.asPath, 'pathname=' + router.pathname, 'href=' + href);
+    // console.log('aspath=' + router.asPath, 'pathname=' + router.pathname, 'href=' + href);
 
     return (
         <div>

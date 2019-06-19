@@ -16,13 +16,26 @@ import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {signupuser} from "../lib/auth";
+import Link from 'next/link';
+
+function Transition(props) {
+    // console.log(props);
+    return <Slide direction="up" {...props} />
+}
 
 class Signup extends React.Component {
     state = {
         name: '',
         email: '',
-        password: ''
+        password: '',
+        error: {},
+        openError: false,
+        openSuccess: false,
+        createdUser: {},
+        isLoading: false
     };
+
+    handleClose = () => this.setState({openError: false});
 
     handleChange = e => {
         this.setState({[e.target.name]: e.target.value})
@@ -31,12 +44,30 @@ class Signup extends React.Component {
     handleSubmit = e => {
         const {name, email, password} = this.state;
         const user = {name, email, password};
-        signupuser(user);
+
+        this.setState({isLoading: true, error: {}});
+
+        signupuser(user)
+            .then(createdUser => {
+                this.setState({
+                    createdUser,
+                    openSuccess: true,
+                    error: {},
+                    isLoading: false
+                });
+            }).catch(this.showError);
+
         e.preventDefault();
+    };
+
+    showError = err => {
+        const error = err.response && err.response.data || err.message;
+        this.setState({error, openError: true, isLoading: false});
     };
 
     render() {
         const {classes} = this.props;
+        const {error, openError, openSuccess, createdUser, isLoading} = this.state;
 
         return (
             <div className={classes.root}>
@@ -77,11 +108,53 @@ class Signup extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 className={classes.submit}
+                                disabled={isLoading}
                         >
-                            SIGN UP
+                            {isLoading ? "Signing up..." : "SIGN UP"}
                         </Button>
                     </form>
+
+
+                    {/*error*/}
+                    {error.errors && <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right'
+                        }}
+                        open={openError}
+                        onClose={this.handleClose}
+                        autoHideDuration={6000}
+                        message={<span className={classes.snack}>{error.errors.message}</span>}
+                    />}
                 </Paper>
+
+                {/*success*/}
+                <Dialog
+                    open={openSuccess}
+                    disableBackdropClick={false}
+                    TransitionComponent={Transition}
+                >
+
+                    <DialogTitle>
+                        <VerifiedUserTwoTone className={classes.icon}/>
+                        New Account
+                    </DialogTitle>
+
+                    <DialogContent>
+                        <DialogContentText>
+                            User {createdUser.name} successfully created!
+                        </DialogContentText>
+                        <DialogActions>
+                            <Button color="primary" variant="contained">
+                                <Link href="/signin">
+                                    <a className={classes.signinLink}>Sign In</a>
+                                </Link>
+                            </Button>
+                        </DialogActions>
+                    </DialogContent>
+
+                </Dialog>
+
             </div>
         );
     }
