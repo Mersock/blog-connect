@@ -47,7 +47,7 @@ class Signup extends React.Component {
 
         this.setState({isLoading: true, error: {}});
 
-        signupuser(user)
+        signupUser(user)
             .then(createdUser => {
                 this.setState({
                     createdUser,
@@ -110,7 +110,7 @@ class Signup extends React.Component {
                                 className={classes.submit}
                                 disabled={isLoading}
                         >
-                            {isLoading ? "Signing up..." : "SIGN UP"}
+                            {isLoading ? "Signing up..." : "Sign UP"}
                         </Button>
                     </form>
 
