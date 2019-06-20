@@ -110,7 +110,7 @@ class Signup extends React.Component {
                                 className={classes.submit}
                                 disabled={isLoading}
                         >
-                            {isLoading ? "Signing up..." : "Sign UP"}
+                            {isLoading ? "Signing up..." : "Sign up"}
                         </Button>
                     </form>
 

@@ -11,6 +11,7 @@
 // import Divider from "@material-ui/core/Divider";
 // import Edit from "@material-ui/icons/Edit";
 import withStyles from "@material-ui/core/styles/withStyles";
+import {authInitialProps} from "../lib/auth";
 
 class Profile extends React.Component {
   state = {};
@@ -47,5 +48,8 @@ const styles = theme => ({
     margin: 10
   }
 });
+
+Profile.getInitialProps = authInitialProps(true);
+
 
 export default withStyles(styles)(Profile);
