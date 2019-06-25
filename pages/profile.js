@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -13,30 +14,47 @@ import Edit from "@material-ui/icons/Edit";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {getUser} from "../lib/api";
 import {authInitialProps} from "../lib/auth";
-import Link from "next/link";
+import FollowUser from '../components/profile/FollowUser';
 
 class Profile extends React.Component {
     state = {
         user: null,
         isAuth: false,
-        isLoading: true
+        isLoading: true,
+        isFollowing: false
     };
 
     componentDidMount() {
         const {userId, auth} = this.props;
         const isAuth = auth.user._id === userId;
+
         getUser(userId).then(user => {
+            const isFollowing = this.checkFollow(auth, user);
             this.setState({
                 user,
                 isAuth,
-                isLoading: false
+                isLoading: false,
+                isFollowing
             });
         });
-    }
+    };
+
+    checkFollow = (auth, user) => {
+        return user.followers.findIndex(follower => follower._id === auth.user._id) > -1
+    };
+
+    toggleFollow = sendRequest => {
+        const {auth, userId} = this.props;
+        const {isFollowing} = this.state;
+
+        sendRequest(userId).then(() => {
+            this.setState({isFollowing: !isFollowing})
+        })
+    };
 
     render() {
         const {classes} = this.props;
-        const {isLoading, user, isAuth} = this.state;
+        const {isLoading, user, isAuth, isFollowing} = this.state;
 
         return (
             <Paper className={classes.root} elevation={4}>
@@ -78,7 +96,10 @@ class Profile extends React.Component {
                                     </Link>
                                 </ListItemSecondaryAction>
                             ) : (
-                                <div>Follow</div>
+                                <FollowUser
+                                    isFollowing={isFollowing}
+                                    toggleFollow={this.toggleFollow}
+                                />
                             )}
                         </ListItem>
                         <Divider/>
