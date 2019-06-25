@@ -26,7 +26,7 @@ const Navbar = ({classes, router, pageProps: {auth}}) => {
                 {user._id ? (
                     <div>
                         <Button>
-                            <ActiveLink href="/profile">
+                            <ActiveLink href={`/profile/${user._id}`} link={`/profile?userId=${user._id}`}>
                                 Profile
                             </ActiveLink>
                         </Button>
