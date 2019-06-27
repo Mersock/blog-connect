@@ -17,7 +17,7 @@ import FaceTwoTone from "@material-ui/icons/FaceTwoTone";
 import EditSharp from "@material-ui/icons/EditSharp";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { authInitialProps } from "../lib/auth";
-import { getAuthUser } from "../lib/api";
+import { getAuthUser,updateUser } from "../lib/api";
 
 
 class EditProfile extends React.Component {
@@ -27,11 +27,14 @@ class EditProfile extends React.Component {
     email: "",
     about: "",
     avatar: "",
-    isLoading: true
+    isLoading: true,
+    avatarPreview: ""
   };
 
   componentDidMount() {
     const { auth } = this.props
+
+    this.userData = new FormData();
     getAuthUser(auth.user._id)
       .then(user => {
         this.setState({
@@ -44,9 +47,29 @@ class EditProfile extends React.Component {
       });
   }
 
+  handleChange = event => {
+    let inputValue;
+
+    if (event.target.name == "avatar") {
+      inputValue = event.target.files[0]
+      this.setState({ avatarPreview: this.createPreviewImage(inputValue) })
+    } else {
+      inputValue = event.target.value;
+    }
+    this.userData.set(event.target.name, inputValue);
+    this.setState({ [event.target.name]: inputValue });
+  }
+
+  handleSubmit =  event => {
+      event.preventDefault();
+      updateUser(this.state._id, this.userData).then(data => console.log(data));
+  }
+
+  createPreviewImage = file => URL.createObjectURL(file)
+
   render() {
     const { classes } = this.props;
-    const { name, email, avatar, about, isLoading } = this.state;
+    const { name, email, avatar, about, isLoading, avatarPreview } = this.state;
 
     return (
       <div className={classes.root}>
@@ -58,13 +81,13 @@ class EditProfile extends React.Component {
             Edit Profile
           </Typography>
 
-          <form className={classes.form}>
+          <form onSubmit={this.handleSubmit} className={classes.form}>
             {isLoading ? (
               <Avatar className={classes.bigAvatar}>
                 <FaceTwoTone />
               </Avatar>
             ) : (
-                <Avatar src={avatar} className={classes.bigAvatar} />
+                <Avatar src={avatarPreview || avatar} className={classes.bigAvatar} />
               )}
             <input
               type="file"
@@ -93,7 +116,7 @@ class EditProfile extends React.Component {
                 onChange={this.handleChange}
               />
             </FormControl>
-            <FormControl margin="about" fullWidth>
+            <FormControl margin="normal" fullWidth>
               <InputLabel htmlFor="about">About</InputLabel>
               <Input
                 type="text"
@@ -102,7 +125,7 @@ class EditProfile extends React.Component {
                 onChange={this.handleChange}
               />
             </FormControl>
-            <FormControl margin="email" required fullWidth>
+            <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email</InputLabel>
               <Input
                 type="text"
