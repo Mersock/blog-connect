@@ -15,6 +15,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {getUser} from "../lib/api";
 import {authInitialProps} from "../lib/auth";
 import FollowUser from '../components/profile/FollowUser';
+import DeleteUser from "../components/profile/DeleteUser";
 
 class Profile extends React.Component {
     state = {
@@ -53,9 +54,8 @@ class Profile extends React.Component {
     };
 
     render() {
-        const {classes} = this.props;
+        const {auth, classes} = this.props;
         const {isLoading, user, isAuth, isFollowing} = this.state;
-
         return (
             <Paper className={classes.root} elevation={4}>
                 <Typography
@@ -94,6 +94,7 @@ class Profile extends React.Component {
                                             </IconButton>
                                         </a>
                                     </Link>
+                                    <DeleteUser user={auth.user}/>
                                 </ListItemSecondaryAction>
                             ) : (
                                 <FollowUser
