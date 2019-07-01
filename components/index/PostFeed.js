@@ -18,7 +18,7 @@ class PostFeed extends React.Component {
         let inputValue;
 
         if (event.target.name == "image") {
-            inputValue = event.target.files[0]
+            inputValue = event.target.files[0];
         } else {
             inputValue = event.target.value;
         }

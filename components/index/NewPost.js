@@ -14,7 +14,7 @@ const NewPost = ({classes, auth, text, image, handleChange}) => (
     <Card className={classes.card}>
         <CardHeader
             avatar={<Avatar src={auth.user.avatar}/>}
-            title={<Typography variant="h6" component="h2" >
+            title={<Typography variant="h6" component="h2" align="left">
                 {auth.user.name}
             </Typography>}
             className={classes.cardHeader}
