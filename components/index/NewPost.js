@@ -46,7 +46,7 @@ const NewPost = ({classes, auth, text, image, handleChange}) => (
             <label htmlFor="image">
                 <IconButton
                     color="secondary"
-                    componenet="span"
+                    component="span"
                 >
                     <AddAPhoto/>
                 </IconButton>
