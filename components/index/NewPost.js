@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import AddAPhoto from "@material-ui/icons/AddAPhoto";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-const NewPost = ({classes, auth, text, image, handleChange}) => (
+const NewPost = ({classes, auth, text, image, handleChange, handleAddPost, isAddingPost}) => (
     <Card className={classes.card}>
         <CardHeader
             avatar={<Avatar src={auth.user.avatar}/>}
@@ -57,10 +57,11 @@ const NewPost = ({classes, auth, text, image, handleChange}) => (
             <Button
                 color="primary"
                 variant="contained"
-                disabled={!text}
+                disabled={!text || isAddingPost}
                 className={classes.submit}
+                onClick={handleAddPost}
             >
-                Post
+                {isAddingPost ? "Sending" : "Post"}
             </Button>
         </CardActions>
     </Card>
