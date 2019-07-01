@@ -10,8 +10,20 @@ class PostFeed extends React.Component {
         image: ""
     };
 
-    handleChange = () => {
+    componentDidMount() {
+       this.userData = new FormData();
+    }
 
+    handleChange = event => {
+        let inputValue;
+
+        if (event.target.name == "image") {
+            inputValue = event.target.files[0]
+        } else {
+            inputValue = event.target.value;
+        }
+        this.userData.set(event.target.name, inputValue);
+        this.setState({[event.target.name]: inputValue});
     };
 
     render() {
