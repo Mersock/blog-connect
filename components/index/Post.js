@@ -18,7 +18,15 @@ class Post extends React.Component {
     state = {};
 
     render() {
-        const {classes, post, auth, isDeletingPost, handleDeletePost} = this.props;
+        const {
+            classes,
+            post,
+            auth,
+            isDeletingPost,
+            handleDeletePost,
+            handleToggleLike
+        } = this.props;
+
         const istPostCreator = post.postedBy._id == auth.user._id;
 
         return (
@@ -53,7 +61,7 @@ class Post extends React.Component {
                     )}
                 </CardContent>
                 <CardActions>
-                    <IconButton className={classes.button}>
+                    <IconButton className={classes.button} onClick={() => handleToggleLike(post)}>
                         <Badge badgeContent={0} color="secondary">
                             <FavoriteBorder className={classes.favoriteIcon}/>
                         </Badge>
