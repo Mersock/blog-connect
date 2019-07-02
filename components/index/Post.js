@@ -15,7 +15,30 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Link from 'next/link';
 
 class Post extends React.Component {
-    state = {};
+    state = {
+        isLiked: false,
+        numLikes: 0,
+        comments: []
+    };
+
+    componentDidMount() {
+        this.setState({
+            isLiked: this.checkLike(this.props.post.likes),
+            numLikes: this.props.post.likes.length
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // console.log(prevProps);
+        if (prevProps.post.likes.length !== this.props.post.likes.length) {
+            this.setState({
+                isLiked: this.checkLike(this.props.post.likes),
+                numLikes: this.props.post.likes.length
+            })
+        }
+    }
+
+    checkLike = likes => likes.includes(this.props.auth.user._id);
 
     render() {
         const {
@@ -26,6 +49,8 @@ class Post extends React.Component {
             handleDeletePost,
             handleToggleLike
         } = this.props;
+
+        const {isLiked, numLikes, comments} = this.state;
 
         const istPostCreator = post.postedBy._id == auth.user._id;
 
@@ -62,12 +87,17 @@ class Post extends React.Component {
                 </CardContent>
                 <CardActions>
                     <IconButton className={classes.button} onClick={() => handleToggleLike(post)}>
-                        <Badge badgeContent={0} color="secondary">
-                            <FavoriteBorder className={classes.favoriteIcon}/>
+
+                        <Badge badgeContent={numLikes} color="secondary">
+                            {isLiked ? (
+                                <Favorite className={classes.favoriteIcon}/>
+                            ) : (
+                                <FavoriteBorder className={classes.favoriteIcon}/>
+                            )}
                         </Badge>
                     </IconButton>
                     <IconButton className={classes.button}>
-                        <Badge badgeContent={0} color="primary">
+                        <Badge badgeContent={comments.length} color="primary">
                             <Comment className={classes.commentIcon}/>
                         </Badge>
                     </IconButton>

@@ -80,7 +80,7 @@ class PostFeed extends React.Component {
         const {auth} = this.props;
 
         const isPostLinked = post.likes.includes(auth.user._id);
-        console.log(isPostLinked);
+        // console.log(isPostLinked);
         const sendRequest = isPostLinked ? unlikePost : likePost;
 
         sendRequest(post._id)
