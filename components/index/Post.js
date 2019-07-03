@@ -56,7 +56,8 @@ class Post extends React.Component {
             isDeletingPost,
             handleDeletePost,
             handleToggleLike,
-            handleAddComment
+            handleAddComment,
+            handleDeleteComment
 
         } = this.props;
 
@@ -120,6 +121,7 @@ class Post extends React.Component {
                     postId={post._id}
                     comments={comments}
                     handleAddComment={handleAddComment}
+                    handleDeleteComment={handleDeleteComment}
                 />
             </Card>
         )
