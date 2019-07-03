@@ -9,10 +9,13 @@ import Link from 'next/link';
 
 
 class Comments extends React.Component {
-    state = {};
+    state = {
+        text: ""
+    };
 
     showComment = comment => {
         const {postId, auth, classes} = this.props;
+        const {text} = this.state;
         const isCommentCreator = comment.postedBy._id === auth.user._id;
 
         return (
@@ -21,6 +24,7 @@ class Comments extends React.Component {
                     <a>{comment.postedBy.name}</a>
                 </Link>
                 <br/>
+                {comment.text}
                 <span className={classes.commentDate}>
                     {comment.createdAt}
                     {isCommentCreator && (
@@ -34,21 +38,37 @@ class Comments extends React.Component {
         )
     };
 
+    handleChange = event => {
+        this.setState({text: event.target.value});
+    };
+
+    handleSubmit = event => {
+        event.preventDefault();
+        const {text} = this.state;
+        const {postId, handleAddComment} = this.props;
+        //
+        handleAddComment(postId, text);
+        this.setState({text: ""});
+    };
+
     render() {
         const {auth, comments, classes} = this.props;
+        const {text} = this.state;
 
         return (
             <div className={classes.comments}>
                 <CardHeader
                     avatar={<Avatar className={classes.smallAvatar} src={auth.user.avatar}/>}
                     title={
-                        <form>
+                        <form onSubmit={this.handleSubmit}>
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="add-comment">Add comments</InputLabel>
                                 <Input
                                     id="add-comment"
                                     name="text"
                                     placeholder="Reply to this post"
+                                    onChange={this.handleChange}
+                                    value={text}
                                 />
                             </FormControl>
                         </form>
@@ -60,7 +80,7 @@ class Comments extends React.Component {
                 {comments.map(comment => (
                     <CardHeader
                         key={comment._id}
-                        avatar={<Avarar className={classes.smallAvatar}
+                        avatar={<Avatar className={classes.smallAvatar}
                                         src={comment.postedBy.avatar}
                         />}
                         title={this.showComment(comment)}
