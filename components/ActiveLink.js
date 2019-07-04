@@ -18,19 +18,6 @@ const ActiveLink = ({router, href, children, link}) => {
 
     return (
         <div>
-            {link ? (
-                <Link href={link} as={href}>
-                    <a style={{
-                        textDecoration: 'none',
-                        margin: 0,
-                        padding: 0,
-                        fontWeight: isCurrentPath ? "bold" : "normal",
-                        color: isCurrentPath ? '#C62828' : '#fff'
-                    }}>
-                        {children}
-                    </a>
-                </Link>
-            ) : (
                 <a href={href} onClick={handleClick} style={{
                     textDecoration: 'none',
                     margin: 0,
@@ -41,8 +28,6 @@ const ActiveLink = ({router, href, children, link}) => {
                 >
                     {children}
                 </a>
-            )}
-
         </div>
     );
 };
