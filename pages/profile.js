@@ -212,6 +212,7 @@ class Profile extends React.Component {
 
                         <ProfileTabs
                             auth={auth}
+                            user={user}
                             posts={posts}
                             isDeletingPost={isDeletingPost}
                             handleDeletePost={this.handleDeletePost}
