@@ -26,6 +26,7 @@ import {
     addComment,
     deleteComment
 } from "../lib/api";
+import format from 'date-fns/format'
 
 class Profile extends React.Component {
     state = {
@@ -152,6 +153,9 @@ class Profile extends React.Component {
             })
     };
 
+    formatDate = date => format(date,"dddd,MMMM Do,YYYY");
+
+
     render() {
         const {auth, classes} = this.props;
         const {isLoading, user, posts, isAuth, isFollowing, isDeletingPost} = this.state;
@@ -206,7 +210,7 @@ class Profile extends React.Component {
                         <ListItem>
                             <ListItemText
                                 primary={user.about}
-                                secondary={`Joined: ${user.createdAt}`}
+                                secondary={`Joined: ${this.formatDate(user.createdAt)}`}
                             />
                         </ListItem>
 
