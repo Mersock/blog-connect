@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Post from '../../components/index/Post';
+import List from "../../pages/profile";
 
 class ProfileTabs extends React.Component {
     state = {
@@ -15,7 +16,16 @@ class ProfileTabs extends React.Component {
 
     render() {
         const {tab} = this.state;
-        const {posts, user, auth} = this.props;
+        const {
+            posts, user, auth,
+            isDeletingPost,
+            handleDeletePost,
+            handleToggleLike,
+            handleAddComment,
+            handleDeleteComment
+        } = this.props;
+        // console.log('comment',handleDeleteComment);
+        // console.log('deletepost',handleDeletePost);
 
 
         return (
@@ -37,8 +47,13 @@ class ProfileTabs extends React.Component {
                         {posts.map(post => (
                             <Post
                                 key={post._id}
-                                post={post}
                                 auth={auth}
+                                post={post}
+                                isDeletingPost={isDeletingPost}
+                                handleDeletePost={handleDeletePost}
+                                handleToggleLike={handleToggleLike}
+                                handleAddComment={handleAddComment}
+                                handleDeleteComment={handleDeleteComment}
                             />
                         ))}
                     </TabContainer>
